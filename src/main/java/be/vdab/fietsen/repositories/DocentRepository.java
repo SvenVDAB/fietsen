@@ -2,9 +2,10 @@ package be.vdab.fietsen.repositories;
 
 import be.vdab.fietsen.domain.Docent;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+@Repository
 public class DocentRepository {
     private final EntityManager manager;
 
