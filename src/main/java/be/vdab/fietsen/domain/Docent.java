@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Table(name = "docenten")
 public class Docent {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String voornaam;
     private String familienaam;
@@ -17,11 +18,11 @@ public class Docent {
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
 
-    public Docent() {}
+    protected Docent() {
+    }
 
-    public Docent(long id, String voornaam, String familienaam,
+    public Docent(String voornaam, String familienaam,
                   BigDecimal wedde, String emailAdres, Geslacht geslacht) {
-        this.id = id;
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
