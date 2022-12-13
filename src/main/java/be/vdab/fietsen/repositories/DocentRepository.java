@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public class DocentRepository {
+
     private final EntityManager manager;
 
     public DocentRepository(EntityManager manager) {
@@ -18,5 +19,10 @@ public class DocentRepository {
 
     public void create(Docent docent) {
         manager.persist(docent);
+    }
+
+    public void delete(long id) {
+        findById(id)
+                .ifPresent(docent -> manager.remove(docent));
     }
 }
