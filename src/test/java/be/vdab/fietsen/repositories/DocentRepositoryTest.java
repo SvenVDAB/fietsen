@@ -2,6 +2,7 @@ package be.vdab.fietsen.repositories;
 
 import be.vdab.fietsen.domain.Docent;
 import be.vdab.fietsen.domain.Geslacht;
+import be.vdab.fietsen.projections.AantalDocentenPerWedde;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,5 +88,58 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
         repository.delete(id);
         manager.flush();
         assertThat(countRowsInTableWhere(DOCENTEN, "id =" + id)).isZero();
+    }
+
+    @Test
+    void findAll() {
+        assertThat(repository.findAll())
+                .hasSize((countRowsInTable(DOCENTEN)))
+                .extracting((Docent::getWedde))
+                .isSorted();
+    }
+
+    @Test
+    void findByWeddeBetween() {
+        var duizend = BigDecimal.valueOf(1000);
+        var tweeduizend = BigDecimal.valueOf(2000);
+        var docenten = repository.findByWeddeBetween(duizend, tweeduizend);
+        assertThat(docenten)
+                .hasSize(countRowsInTableWhere(DOCENTEN, "wedde between 1000 and 2000"))
+                .allSatisfy(
+                        docent -> assertThat(docent.getWedde()).isBetween(duizend, tweeduizend)
+                );
+    }
+
+    @Test
+    void findEmailAdressen() {
+        assertThat(repository.findEmailAdressen())
+                .hasSize(countRowsInTable(DOCENTEN))
+                .allSatisfy(emailadres -> assertThat(emailadres).contains("@"));
+    }
+
+    @Test
+    void findByIdsEnEmailAdressen() {
+        assertThat(repository.findIdsEnEmailAdressen())
+                .hasSize(countRowsInTable(DOCENTEN));
+    }
+
+    @Test
+    void findGrootsteWedde() {
+        assertThat(repository.findGrootsteWedde())
+                .isEqualByComparingTo(jdbcTemplate
+                        .queryForObject("select max(wedde) from docenten", BigDecimal.class));
+    }
+
+    @Test
+    void findAantalDocentenPerWedde() {
+        var duizend = BigDecimal.valueOf(1000);
+        assertThat(repository.findAantalDocentenPerWedde())
+                .hasSize(jdbcTemplate.queryForObject("select count(distinct wedde) from docenten", Integer.class))
+                .filteredOn(
+                        aantalPerWedde -> aantalPerWedde.wedde().compareTo(duizend) == 0
+                )
+                .singleElement()
+                .extracting(AantalDocentenPerWedde::aantal)
+                .isEqualTo((long) countRowsInTableWhere(DOCENTEN, "wedde = 1000"));
     }
 }
