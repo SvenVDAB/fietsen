@@ -3,9 +3,8 @@ package be.vdab.fietsen.domain;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "cursussen")
-@DiscriminatorColumn(name = "soort")
 public abstract class Cursus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -17,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql("/insertCursus.sql")
 class CursusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     private static final String CURSUSSEN = "cursussen";
+    private static final String GROEPSCURSUSSEN = "groepscursussen";
+    private static final String INDIVIDUELECURSUSSEN = "individuelecursussen";
     private static final LocalDate EEN_DATUM = LocalDate.of(2019, 1, 1);
     private final CursusRepository repository;
 
@@ -61,6 +63,8 @@ class CursusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests
         repository.create(cursus);
         assertThat(countRowsInTableWhere(CURSUSSEN,
                 "id = '" + cursus.getId() + "'")).isOne();
+        assertThat(countRowsInTableWhere(GROEPSCURSUSSEN,
+                "id = '" + cursus.getId() + "'")).isOne();
     }
 
     @Test
@@ -68,6 +72,8 @@ class CursusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests
         var cursus = new IndividueleCursus("testIndividueel2", 7);
         repository.create(cursus);
         assertThat(countRowsInTableWhere(CURSUSSEN, "id = '" + cursus.getId() + "'"))
+                .isOne();
+        assertThat(countRowsInTableWhere(INDIVIDUELECURSUSSEN, "id = '" + cursus.getId() + "'"))
                 .isOne();
     }
 }
