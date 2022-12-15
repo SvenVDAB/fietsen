@@ -78,4 +78,10 @@ public class DocentRepository {
                         """, AantalDocentenPerWedde.class)
                 .getResultList();
     }
+
+    public int algemeneOpslag(BigDecimal percentage) {
+        return manager.createNamedQuery("Docent.algemeneOpslag")
+                .setParameter("percentage", percentage)
+                .executeUpdate();
+    }
 }
