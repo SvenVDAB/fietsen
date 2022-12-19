@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Repository
 public class CursusRepository {
-    private final EntityManager manager; // constructor met parameter
+    private final EntityManager manager;
 
     public CursusRepository(EntityManager manager) {
         this.manager = manager;
