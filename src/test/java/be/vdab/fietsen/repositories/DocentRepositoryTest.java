@@ -22,6 +22,7 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
     private final DocentRepository repository;
     private final EntityManager manager;
     private static final String DOCENTEN = "docenten";
+    private static final String DOCENTEN_BIJNAMEN = "docentenbijnamen";
     private Docent docent;
 
     public DocentRepositoryTest(DocentRepository repository, EntityManager manager) {
@@ -150,5 +151,24 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
         assertThat(countRowsInTableWhere(DOCENTEN,
                 "wedde = 1100 and id = " + idVanTestMan()))
                 .isOne();
+    }
+
+    @Test
+    void bijnamenLezen() {
+        assertThat(repository.findById(idVanTestMan()))
+                .hasValueSatisfying(
+                        docent ->
+                                assertThat(docent.getBijnamen())
+                                        .containsOnly("test")
+                );
+    }
+
+    @Test
+    void bijnaamToevoegen() {
+        repository.create(docent);
+        docent.addBijnaam("test");
+        manager.flush();
+        assertThat(countRowsInTableWhere(DOCENTEN_BIJNAMEN,
+                "bijnaam = 'test' and docentid = " + docent.getId())).isOne();
     }
 }
