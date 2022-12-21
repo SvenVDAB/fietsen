@@ -1,5 +1,7 @@
 package be.vdab.fietsen.repositories;
 
+import be.vdab.fietsen.domain.Adres;
+import be.vdab.fietsen.domain.Campus;
 import be.vdab.fietsen.domain.Docent;
 import be.vdab.fietsen.domain.Geslacht;
 import be.vdab.fietsen.projections.AantalDocentenPerWedde;
@@ -16,7 +18,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
-@Sql("/insertDocent.sql")
+@Sql({"/insertCampus.sql", "/insertDocent.sql"})
 @Import(DocentRepository.class)
 public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     private final DocentRepository repository;
@@ -24,6 +26,7 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
     private static final String DOCENTEN = "docenten";
     private static final String DOCENTEN_BIJNAMEN = "docentenbijnamen";
     private Docent docent;
+    private Campus campus;
 
     public DocentRepositoryTest(DocentRepository repository, EntityManager manager) {
         this.repository = repository;
@@ -32,7 +35,8 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
 
     @BeforeEach
     void beforeEach() {
-        docent = new Docent("test", "test", BigDecimal.TEN, "test@test.be", Geslacht.MAN);
+        campus = new Campus("test", new Adres("test", "test", "test", "test"));
+        docent = new Docent("test", "test", BigDecimal.TEN, "test@test.be", Geslacht.MAN, campus);
     }
 
     private long idVanTestMan() {
@@ -78,9 +82,11 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     void create() {
+        manager.persist(campus);
         repository.create(docent);
         assertThat(docent.getId()).isPositive();
-        assertThat(countRowsInTableWhere(DOCENTEN, "id = " + docent.getId())).isOne();
+        assertThat(countRowsInTableWhere(DOCENTEN,
+                "id = " + docent.getId() + " and campusId = " + campus.getId())).isOne();
     }
 
     @Test
@@ -165,10 +171,19 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
 
     @Test
     void bijnaamToevoegen() {
+        manager.persist(campus);
         repository.create(docent);
         docent.addBijnaam("test");
         manager.flush();
         assertThat(countRowsInTableWhere(DOCENTEN_BIJNAMEN,
                 "bijnaam = 'test' and docentid = " + docent.getId())).isOne();
+    }
+
+    @Test
+    void campusLazyLoaded() {
+        assertThat(repository.findById(idVanTestMan()))
+                .hasValueSatisfying(
+                        docent -> assertThat(docent.getCampus().getNaam()).isEqualTo("test")
+                );
     }
 }

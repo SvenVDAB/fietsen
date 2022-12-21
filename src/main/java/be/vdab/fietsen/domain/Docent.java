@@ -18,10 +18,11 @@ public class Docent {
     private String familienaam;
     private BigDecimal wedde;
     private String emailAdres;
-
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
-
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "campusId")
+    private Campus campus;
     @ElementCollection
     @CollectionTable(name = "docentenbijnamen",
             joinColumns = @JoinColumn(name = "docentId"))
@@ -32,13 +33,15 @@ public class Docent {
     }
 
     public Docent(String voornaam, String familienaam,
-                  BigDecimal wedde, String emailAdres, Geslacht geslacht) {
+                  BigDecimal wedde, String emailAdres,
+                  Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
+        setCampus(campus);
     }
 
     public long getId() {
@@ -65,6 +68,19 @@ public class Docent {
         return geslacht;
     }
 
+    public Set<String> getBijnamen() {
+        //return bijnamen;
+        return Collections.unmodifiableSet(bijnamen);
+    }
+
+    public Campus getCampus() {
+        return campus;
+    }
+
+    public void setCampus(Campus campus) {
+        this.campus = campus;
+    }
+
     public void opslag(BigDecimal percentage) {
         if (percentage.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException();
@@ -83,10 +99,5 @@ public class Docent {
 
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
-    }
-
-    public Set<String> getBijnamen() {
-        //return bijnamen;
-        return Collections.unmodifiableSet(bijnamen);
     }
 }
