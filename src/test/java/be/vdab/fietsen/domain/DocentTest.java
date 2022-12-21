@@ -10,12 +10,14 @@ import static org.assertj.core.api.Assertions.*;
 public class DocentTest {
     private final static BigDecimal WEDDE = BigDecimal.valueOf(200);
     private Docent docent1;
-    private Campus campus1;
+    private Docent docent2;
+    //private Campus campus1;
 
     @BeforeEach
     void beforeEach() {
-        campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
-        docent1 = new Docent("test", "test", WEDDE, "test@test.be", Geslacht.MAN, campus1);
+        //campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
+        docent1 = new Docent("test", "test", WEDDE, "test@test.be", Geslacht.MAN/*, campus1*/);
+
     }
 
     @Test

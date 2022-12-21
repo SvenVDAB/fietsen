@@ -22,6 +22,11 @@ public class Campus {
     @OrderBy("fax")
     private Set<TelefoonNr> telefoonNrs;
 
+    @OneToMany
+    @JoinColumn(name = "campusId")
+    @OrderBy("voornaam, familienaam")
+    private Set<Docent> docenten;
+
     protected Campus() {
     }
 
@@ -29,6 +34,7 @@ public class Campus {
         this.naam = naam;
         this.adres = adres;
         this.telefoonNrs = new LinkedHashSet<>();
+        this.docenten = new LinkedHashSet<>();
     }
 
     public long getId() {
@@ -47,6 +53,10 @@ public class Campus {
         return Collections.unmodifiableSet(telefoonNrs);
     }
 
+    public Set<Docent> getDocenten() {
+        return Collections.unmodifiableSet(docenten);
+    }
+
     public boolean addTelefoonNr(TelefoonNr telefoonNr) {
         if (telefoonNr.getNummer().trim().isEmpty()) {
             throw new IllegalArgumentException();
@@ -56,5 +66,12 @@ public class Campus {
 
     public boolean removeTelefoonNr(TelefoonNr telefoonNr) {
         return telefoonNrs.remove(telefoonNr);
+    }
+
+    public boolean add(Docent docent) {
+        if (docent == null) {
+            throw new NullPointerException();
+        }
+        return docenten.add(docent);
     }
 }
