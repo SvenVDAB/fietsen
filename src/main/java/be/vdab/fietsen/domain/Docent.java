@@ -102,10 +102,10 @@ public class Docent {
     }
 
     @Override public boolean equals(Object object) {
-        return object instanceof Docent docent && id == docent.id;
+        return object instanceof Docent docent && emailAdres.equalsIgnoreCase(docent.emailAdres);
     }
     @Override
     public int hashCode() {
-        return (int) id;
+        return emailAdres == null? 0 : emailAdres.toLowerCase().hashCode();
     }
 }

@@ -84,11 +84,15 @@ public class DocentRepositoryTest extends AbstractTransactionalJUnit4SpringConte
     @Test
     void create() {
         manager.persist(campus);
+        System.out.println(docent.hashCode()); // 0
         repository.create(docent);
+        System.out.println(docent.hashCode()); // 865
         manager.flush();
         assertThat(docent.getId()).isPositive();
         assertThat(countRowsInTableWhere(DOCENTEN,
                 "id = " + docent.getId() + " and campusId = " + campus.getId())).isOne();
+
+        campus.getDocenten().forEach(docent1 -> System.out.println(docent1.hashCode()));
         assertThat(campus
                 .getDocenten()
                 .contains(docent))

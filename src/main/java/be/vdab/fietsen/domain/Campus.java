@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -73,5 +74,19 @@ public class Campus {
             throw new NullPointerException();
         }
         return docenten.add(docent);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Campus campus))
+            return false;
+        return naam.equalsIgnoreCase(campus.naam);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(naam.toLowerCase());
     }
 }

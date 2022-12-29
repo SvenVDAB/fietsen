@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(showSql = false)
 @Import(CampusRepository.class)
-@Sql("/insertCampus.sql")
+@Sql({"/insertCampus.sql", "/insertdocent.sql"})
 public class CampusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     private static final String CAMPUSSEN = "campussen";
 
@@ -79,5 +79,13 @@ public class CampusRepositoryTest extends AbstractTransactionalJUnit4SpringConte
         manager.flush();
         assertThat(countRowsInTableWhere(CAMPUSSENTELEFOONNRS,
                 "nummer = '006' and campusid = " + campus.getId())).isOne();
+    }
+
+    @Test void docentenLazyLoaded() {
+        assertThat(repository.findById(idVanTestCampus()))
+            .hasValueSatisfying(campus -> assertThat(campus.getDocenten())
+                    .hasSize(2)
+                    .first()
+                    .extracting(Docent::getVoornaam).isEqualTo("testM"));
     }
 }
