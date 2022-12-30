@@ -20,9 +20,9 @@ public class Docent {
     private String emailAdres;
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
-/*    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campusId")
-    private Campus campus;*/
+    private Campus campus;
     @ElementCollection
     @CollectionTable(name = "docentenbijnamen",
             joinColumns = @JoinColumn(name = "docentId"))
@@ -34,14 +34,14 @@ public class Docent {
 
     public Docent(String voornaam, String familienaam,
                   BigDecimal wedde, String emailAdres,
-                  Geslacht geslacht/*, Campus campus*/) {
+                  Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
-        //setCampus(campus);
+        setCampus(campus);
     }
 
     public long getId() {
@@ -73,13 +73,16 @@ public class Docent {
         return Collections.unmodifiableSet(bijnamen);
     }
 
-/*    public Campus getCampus() {
+    public Campus getCampus() {
         return campus;
     }
 
     public void setCampus(Campus campus) {
+        if(!campus.getDocenten().contains(this)) {
+            campus.add(this);
+        }
         this.campus = campus;
-    }*/
+    }
 
     public void opslag(BigDecimal percentage) {
         if (percentage.compareTo(BigDecimal.ZERO) <= 0) {
@@ -106,6 +109,6 @@ public class Docent {
     }
     @Override
     public int hashCode() {
-        return emailAdres == null? 0 : emailAdres.toLowerCase().hashCode();
+        return emailAdres == null ? 0 : emailAdres.toLowerCase().hashCode();
     }
 }

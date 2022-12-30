@@ -3,15 +3,21 @@ package be.vdab.fietsen.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CampusTest {
+    private Docent docent1;
     private Campus campus1;
+    private Campus campus2;
 
     @BeforeEach
     void beforeEach() {
         campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
+        campus2 = new Campus("test2", new Adres("test2", "test2", "test2", "test2"));
+        docent1 = new Docent("test", "test", BigDecimal.TEN, "test@test.be", Geslacht.MAN, campus1);
     }
 
     @Test
@@ -65,6 +71,8 @@ public class CampusTest {
         assertThat(campus1.removeTelefoonNr(new TelefoonNr("007", false, "test"))).isFalse();
         assertThat(campus1.getTelefoonNrs()).containsOnly(new TelefoonNr("005", false, "test"));
     }
+
+
 }
 
 

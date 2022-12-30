@@ -32,7 +32,7 @@ public class DocentServiceTest {
         var campus = new Campus("test", new Adres("test", "test", "test", "test"));
         service = new DocentService(repository);
         docent = new Docent("test", "test", BigDecimal.valueOf(100),
-                "test@test.be", Geslacht.MAN/*, campus*/);
+                "test@test.be", Geslacht.MAN, campus);
     }
 
     @Test
