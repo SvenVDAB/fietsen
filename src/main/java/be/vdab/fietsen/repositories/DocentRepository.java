@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public class DocentRepository {
-
     private final EntityManager manager;
 
     public DocentRepository(EntityManager manager) {
@@ -44,6 +43,7 @@ public class DocentRepository {
         return manager.createNamedQuery("Docent.findByWeddeBetween", Docent.class)
                 .setParameter("van", van)
                 .setParameter("tot", tot)
+                .setHint("javax.persistence.loadgraph", manager.createEntityGraph(Docent.MET_CAMPUS))
                 .getResultList();
     }
 
