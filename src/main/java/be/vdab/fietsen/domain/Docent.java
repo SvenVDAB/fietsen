@@ -29,6 +29,9 @@ public class Docent {
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
 
+    @ManyToMany(mappedBy = "docenten")
+    private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
+
     protected Docent() {
     }
 
@@ -77,6 +80,10 @@ public class Docent {
         return campus;
     }
 
+    public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+        return Collections.unmodifiableSet(verantwoordelijkheden);
+    }
+
     public void setCampus(Campus campus) {
         if(!campus.getDocenten().contains(this)) {
             campus.add(this);
@@ -102,6 +109,22 @@ public class Docent {
 
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
+    }
+
+
+    public boolean add(Verantwoordelijkheid verantwoordelijkheid) {
+        var toegevoegd = verantwoordelijkheden.add(verantwoordelijkheid);
+        if (! verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.add(this);
+        }
+        return toegevoegd;
+    }
+    public boolean remove(Verantwoordelijkheid verantwoordelijkheid) {
+        var verwijderd = verantwoordelijkheden.remove(verantwoordelijkheid);
+        if (verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.remove(this);
+        }
+        return verwijderd;
     }
 
     @Override public boolean equals(Object object) {
