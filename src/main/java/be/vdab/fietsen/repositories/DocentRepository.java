@@ -4,6 +4,7 @@ import be.vdab.fietsen.domain.Docent;
 import be.vdab.fietsen.projections.AantalDocentenPerWedde;
 import be.vdab.fietsen.projections.IdEnEmailAdres;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -20,6 +21,10 @@ public class DocentRepository {
 
     public Optional<Docent> findById(long id) {
         return Optional.ofNullable(manager.find(Docent.class, id));
+    }
+
+    public Optional<Docent> findByIdWithLock(long id) {
+        return Optional.ofNullable(manager.find(Docent.class, id, LockModeType.PESSIMISTIC_WRITE));
     }
 
     public void create(Docent docent) {
